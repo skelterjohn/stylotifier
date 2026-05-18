@@ -24,11 +24,24 @@ class StyloWorker(context: Context, workerParams: WorkerParameters) :
             InputDevice.getDevice(id)?.name
         }.filterNotNull().toSet()
 
-        val missingDevices = monitoredDevices.filter { it !in connectedDevices }
+        val currentlyMissing = monitoredDevices.filter { it !in connectedDevices }.toSet()
+        val notifiedMissing = sharedPrefs.getStringSet("notified_missing_devices", emptySet()) ?: emptySet()
 
-        if (missingDevices.isNotEmpty()) {
-            showNotification(missingDevices)
+        // Devices that are now connected should be removed from the notified list
+        val newlyConnected = monitoredDevices.filter { it in connectedDevices }.toSet()
+        val updatedNotifiedMissing = notifiedMissing.toMutableSet()
+        updatedNotifiedMissing.removeAll(newlyConnected)
+
+        // Only notify for devices that are currently missing AND haven't been notified yet
+        val newlyMissingToNotify = currentlyMissing.filter { it !in notifiedMissing }
+
+        if (newlyMissingToNotify.isNotEmpty()) {
+            showNotification(newlyMissingToNotify)
+            updatedNotifiedMissing.addAll(newlyMissingToNotify)
         }
+
+        // Save the updated notified list
+        sharedPrefs.edit().putStringSet("notified_missing_devices", updatedNotifiedMissing).apply()
 
         return Result.success()
     }
