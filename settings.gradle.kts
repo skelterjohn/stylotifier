@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "StyloNotifier"
+rootProject.name = "stylotifier"
 include(":app")
  
