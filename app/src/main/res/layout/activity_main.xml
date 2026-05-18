@@ -4,23 +4,38 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <Button
-        android:id="@+id/detectDevicesButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="60dp"
-        android:text="Detect Devices"
-        android:textSize="14sp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/appTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="stylotifier"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/detectDevicesButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Detect Devices"
+            android:textSize="14sp" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/deviceRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/detectDevicesButton"
+        android:layout_below="@id/headerLayout"
         android:layout_above="@id/bottomInfoText"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="16dp" />
 
     <TextView
         android:id="@+id/bottomInfoText"
