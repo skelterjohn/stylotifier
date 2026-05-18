@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupDeviceList() {
-        val sharedPrefs = getSharedPreferences("StyloNotifierPrefs", Context.MODE_PRIVATE)
+        val sharedPrefs = getSharedPreferences("stylotifierPrefs", Context.MODE_PRIVATE)
         val monitoredDevices = sharedPrefs.getStringSet("monitored_devices", emptySet()) ?: emptySet()
 
         val deviceIds = InputDevice.getDeviceIds()
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateMonitoredDevices() {
-        val sharedPrefs = getSharedPreferences("StyloNotifierPrefs", Context.MODE_PRIVATE)
+        val sharedPrefs = getSharedPreferences("stylotifierPrefs", Context.MODE_PRIVATE)
         val monitoredSet = deviceItems.filter { it.isMonitored }.map { it.name }.toSet()
         sharedPrefs.edit().putStringSet("monitored_devices", monitoredSet).apply()
     }

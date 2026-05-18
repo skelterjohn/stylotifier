@@ -13,7 +13,7 @@ class StyloWorker(context: Context, workerParams: WorkerParameters) :
     Worker(context, workerParams) {
 
     override fun doWork(): Result {
-        val sharedPrefs = applicationContext.getSharedPreferences("StyloNotifierPrefs", Context.MODE_PRIVATE)
+        val sharedPrefs = applicationContext.getSharedPreferences("stylotifierPrefs", Context.MODE_PRIVATE)
         val monitoredDevices = sharedPrefs.getStringSet("monitored_devices", emptySet()) ?: emptySet()
 
         if (monitoredDevices.isEmpty()) {
