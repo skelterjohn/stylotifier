@@ -29,6 +29,10 @@ class MainActivity : AppCompatActivity() {
         deviceRecyclerView = findViewById(R.id.deviceRecyclerView)
         deviceRecyclerView.layoutManager = LinearLayoutManager(this)
 
+        findViewById<android.widget.Button>(R.id.detectDevicesButton).setOnClickListener {
+            setupDeviceList()
+        }
+
         setupDeviceList()
         checkNotificationPermission()
         scheduleWork()
@@ -39,21 +43,31 @@ class MainActivity : AppCompatActivity() {
         val monitoredDevices = sharedPrefs.getStringSet("monitored_devices", emptySet()) ?: emptySet()
 
         val deviceIds = InputDevice.getDeviceIds()
-        val connectedDeviceNames = deviceIds.map { id ->
-            InputDevice.getDevice(id)?.name
-        }.filterNotNull().toSet()
+        val connectedDevices = mutableMapOf<String, String>()
+        for (id in deviceIds) {
+            val device = InputDevice.getDevice(id)
+            if (device != null) {
+                val isExternal = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    device.isExternal
+                } else {
+                    !device.isVirtual
+                }
+                val source = if (isExternal) "External (Bluetooth/USB)" else "System/Internal"
+                connectedDevices[device.name] = source
+            }
+        }
 
         deviceItems.clear()
 
         // Add all currently connected devices
-        connectedDeviceNames.forEach { name ->
-            deviceItems.add(DeviceItem(name, monitoredDevices.contains(name)))
+        for ((name, source) in connectedDevices) {
+            deviceItems.add(DeviceItem(name, source, monitoredDevices.contains(name)))
         }
 
         // Add monitored devices that are not currently connected
         monitoredDevices.forEach { name ->
             if (deviceItems.none { it.name == name }) {
-                deviceItems.add(DeviceItem(name, true))
+                deviceItems.add(DeviceItem(name, "Saved (Disconnected)", true))
             }
         }
 

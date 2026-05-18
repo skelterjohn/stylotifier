@@ -7,7 +7,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-data class DeviceItem(val name: String, var isMonitored: Boolean)
+data class DeviceItem(val name: String, val source: String, var isMonitored: Boolean)
 
 class DeviceAdapter(
     private val devices: List<DeviceItem>,
@@ -17,6 +17,7 @@ class DeviceAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val checkBox: CheckBox = view.findViewById(R.id.deviceCheckBox)
         val nameTextView: TextView = view.findViewById(R.id.deviceNameTextView)
+        val sourceTextView: TextView = view.findViewById(R.id.deviceSourceTextView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,6 +29,7 @@ class DeviceAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val device = devices[position]
         holder.nameTextView.text = device.name
+        holder.sourceTextView.text = device.source
         holder.checkBox.setOnCheckedChangeListener(null)
         holder.checkBox.isChecked = device.isMonitored
         holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
