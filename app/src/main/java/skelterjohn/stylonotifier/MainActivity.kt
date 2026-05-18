@@ -71,10 +71,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        adapter = DeviceAdapter(deviceItems) {
-            updateMonitoredDevices()
+        if (!::adapter.isInitialized) {
+            adapter = DeviceAdapter(deviceItems) {
+                updateMonitoredDevices()
+            }
+            deviceRecyclerView.adapter = adapter
+        } else {
+            adapter.updateDevices(deviceItems)
         }
-        deviceRecyclerView.adapter = adapter
     }
 
     private fun updateMonitoredDevices() {
