@@ -51,7 +51,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="8dp"
-        android:text="The app will notify you every 30 minutes if any selected device is missing. Vibe-coded: use with caution."
+        android:text="The app will notify within 30 minutes if any selected device is missing. Vibe-coded: use with caution."
         android:textSize="12sp"
         android:textColor="#666666" />
 
