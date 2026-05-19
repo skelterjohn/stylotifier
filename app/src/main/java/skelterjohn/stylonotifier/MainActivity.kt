@@ -22,20 +22,52 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: DeviceAdapter
     private val deviceItems = mutableListOf<DeviceItem>()
 
+    private lateinit var rescanProgress: com.google.android.material.progressindicator.CircularProgressIndicator
+    private val handler = android.os.Handler(android.os.Looper.getMainLooper())
+    private var progressAnimator: android.animation.ValueAnimator? = null
+    
+    private val rescanRunnable = object : Runnable {
+        override fun run() {
+            setupDeviceList()
+            startProgressAnimation()
+            handler.postDelayed(this, 5000)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         deviceRecyclerView = findViewById(R.id.deviceRecyclerView)
         deviceRecyclerView.layoutManager = LinearLayoutManager(this)
-
-        findViewById<android.widget.Button>(R.id.detectDevicesButton).setOnClickListener {
-            setupDeviceList()
-        }
+        rescanProgress = findViewById(R.id.rescanProgress)
 
         setupDeviceList()
         checkNotificationPermission()
         scheduleWork()
+    }
+
+    private fun startProgressAnimation() {
+        progressAnimator?.cancel()
+        progressAnimator = android.animation.ValueAnimator.ofInt(0, 100).apply {
+            duration = 5000
+            interpolator = android.view.animation.LinearInterpolator()
+            addUpdateListener { animator ->
+                rescanProgress.progress = animator.animatedValue as Int
+            }
+            start()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        handler.post(rescanRunnable)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        handler.removeCallbacks(rescanRunnable)
+        progressAnimator?.cancel()
     }
 
     private fun setupDeviceList() {

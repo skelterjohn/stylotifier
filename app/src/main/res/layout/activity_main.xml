@@ -15,22 +15,11 @@
 
         <TextView
             android:id="@+id/appTitle"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="stylotifier"
             android:textSize="24sp"
             android:textStyle="bold" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/detectDevicesButton"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Detect Devices"
-            android:textSize="14sp"
-            android:textColor="?attr/colorOnSurface"
-            app:strokeColor="?attr/colorOnSurface" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -38,13 +27,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/headerLayout"
-        android:layout_above="@id/bottomInfoText"
+        android:layout_above="@id/rescanProgress"
         android:layout_marginTop="16dp" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/rescanProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottomInfoText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:max="100"
+        android:progress="0"
+        app:indicatorSize="72dp"
+        app:trackThickness="9dp"
+        app:indicatorColor="?attr/colorOnSurface"
+        app:trackColor="#10000000" />
 
     <TextView
         android:id="@+id/bottomInfoText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="8dp"
         android:text="The app will notify you every 30 minutes if any selected device is missing. Vibe-coded: use with caution."
