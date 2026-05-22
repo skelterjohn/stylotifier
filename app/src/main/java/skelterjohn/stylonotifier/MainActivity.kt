@@ -28,9 +28,11 @@ class MainActivity : AppCompatActivity() {
     
     private val rescanRunnable = object : Runnable {
         override fun run() {
-            setupDeviceList()
-            startProgressAnimation()
-            handler.postDelayed(this, 5000)
+            if (!isDestroyed && !isFinishing) {
+                setupDeviceList()
+                startProgressAnimation()
+                handler.postDelayed(this, 5000)
+            }
         }
     }
 
@@ -70,36 +72,27 @@ class MainActivity : AppCompatActivity() {
         progressAnimator?.cancel()
     }
 
+
     private fun setupDeviceList() {
         val sharedPrefs = getSharedPreferences("stylotifierPrefs", Context.MODE_PRIVATE)
         val monitoredDevices = sharedPrefs.getStringSet("monitored_devices", emptySet()) ?: emptySet()
 
         val deviceIds = InputDevice.getDeviceIds()
-        val connectedDevices = mutableMapOf<String, String>()
+        deviceItems.clear()
+
         for (id in deviceIds) {
-            val device = InputDevice.getDevice(id)
-            if (device != null) {
-                val isExternal = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    device.isExternal
-                } else {
-                    !device.isVirtual
-                }
-                val source = if (isExternal) "External (Bluetooth/USB)" else "System/Internal"
-                connectedDevices[device.name] = source
+            val device = InputDevice.getDevice(id) ?: continue
+            if (DeviceUtils.isExternalDevice(device)) {
+                val identifier = DeviceUtils.getDeviceIdentifier(device)
+                val source = DeviceUtils.getConnectionType(device)
+                deviceItems.add(DeviceItem(identifier, source, monitoredDevices.contains(identifier)))
             }
         }
 
-        deviceItems.clear()
-
-        // Add all currently connected devices
-        for ((name, source) in connectedDevices) {
-            deviceItems.add(DeviceItem(name, source, monitoredDevices.contains(name)))
-        }
-
         // Add monitored devices that are not currently connected
-        monitoredDevices.forEach { name ->
-            if (deviceItems.none { it.name == name }) {
-                deviceItems.add(DeviceItem(name, "Saved (Disconnected)", true))
+        monitoredDevices.forEach { identifier ->
+            if (deviceItems.none { it.name == identifier }) {
+                deviceItems.add(DeviceItem(identifier, "Saved (Disconnected)", true))
             }
         }
 

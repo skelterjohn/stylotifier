@@ -20,9 +20,11 @@ class StyloWorker(context: Context, workerParams: WorkerParameters) :
             return Result.success()
         }
 
-        val connectedDevices = InputDevice.getDeviceIds().map { id ->
-            InputDevice.getDevice(id)?.name
-        }.filterNotNull().toSet()
+        val connectedDevices = InputDevice.getDeviceIds().toList().mapNotNull { id ->
+            InputDevice.getDevice(id)
+        }.filter { DeviceUtils.isExternalDevice(it) }
+            .map { DeviceUtils.getDeviceIdentifier(it) }
+            .toSet()
 
         val currentlyMissing = monitoredDevices.filter { it !in connectedDevices }.toSet()
         val notifiedMissing = sharedPrefs.getStringSet("notified_missing_devices", emptySet()) ?: emptySet()
