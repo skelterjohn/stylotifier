@@ -30,6 +30,16 @@
         android:layout_above="@id/rescanProgress"
         android:layout_marginTop="16dp" />
 
+    <TextView
+        android:id="@+id/noDevicesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No devices found"
+        android:textSize="18sp"
+        android:textColor="#999999"
+        android:visibility="gone" />
+
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/rescanProgress"
         android:layout_width="wrap_content"

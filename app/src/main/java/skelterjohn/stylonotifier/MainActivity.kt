@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
 
     private lateinit var deviceRecyclerView: RecyclerView
+    private lateinit var noDevicesTextView: android.widget.TextView
     private lateinit var adapter: DeviceAdapter
     private val deviceItems = mutableListOf<DeviceItem>()
 
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         deviceRecyclerView = findViewById(R.id.deviceRecyclerView)
         deviceRecyclerView.layoutManager = LinearLayoutManager(this)
+        noDevicesTextView = findViewById(R.id.noDevicesTextView)
         rescanProgress = findViewById(R.id.rescanProgress)
 
         setupDeviceList()
@@ -103,6 +105,12 @@ class MainActivity : AppCompatActivity() {
             deviceRecyclerView.adapter = adapter
         } else {
             adapter.updateDevices(deviceItems)
+        }
+
+        noDevicesTextView.visibility = if (deviceItems.isEmpty()) {
+            android.view.View.VISIBLE
+        } else {
+            android.view.View.GONE
         }
     }
 
